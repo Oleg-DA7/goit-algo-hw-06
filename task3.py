@@ -18,7 +18,7 @@ for source in G.nodes():
     all_paths[source] = paths
     all_distances[source] = distances
 
-print("Найкоротші шляхи та відстані між усіма парами вершин (алгоритм Дейкстри з NetworkX):")
+print("Найкоротші шляхи та відстані між усіма парами вершин:")
 for source in all_paths:
     print(f"\nВід вершини {source}:")
     for target in all_paths[source]:
