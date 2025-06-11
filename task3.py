@@ -1,5 +1,37 @@
 import networkx as nx
-import matplotlib.pyplot as plt
+
+def dijkstra_single(graph, source, rkey = 'distances'):
+    distances = {node: float('inf') for node in graph}
+    distances[source] = 0
+    paths = {node: [] for node in graph}
+    paths[source] = [source]
+    visited = set()
+
+    while len(visited) < len(graph):
+        min_dist = float('inf')
+        min_node = None
+        for node in graph:
+            if node not in visited and distances[node] < min_dist:
+                min_dist = distances[node]
+                min_node = node
+
+        if min_node is None:
+            break
+
+        visited.add(min_node)
+        for neighbor, edge_data in graph[min_node].items():
+            if neighbor not in visited:
+                weight = edge_data['weight']
+                new_dist = distances[min_node] + weight
+                if new_dist < distances[neighbor]:
+                    distances[neighbor] = new_dist
+                    paths[neighbor] = paths[min_node] + [neighbor] 
+        if rkey == 'paths':           
+            result = {node: path for node, path in paths.items()}
+        else: 
+            result = {node: dist for node, dist in distances.items()}
+
+    return result
 
 G = nx.Graph()
 G.add_nodes_from(["Core", "D1", "D2", "A1", "A2"])
@@ -13,8 +45,8 @@ G.add_weighted_edges_from([
 all_paths = {}
 all_distances = {}
 for source in G.nodes():
-    distances = nx.single_source_dijkstra_path_length(G, source, weight='weight')
-    paths = nx.single_source_dijkstra_path(G, source, weight='weight')
+    distances = dijkstra_single(G, source)   # nx.single_source_dijkstra_path_length(G, source, weight='weight')
+    paths = dijkstra_single(G, source, rkey = 'paths') 
     all_paths[source] = paths
     all_distances[source] = distances
 
